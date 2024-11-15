@@ -1,63 +1,43 @@
-function getComputerChoice() {
-    const choices = ["rock", "paper", "scissors"];
-    const randomIndex = Math.floor(Math.random() * choices.length);
-    return choices[randomIndex];
-}
+// script.js
+document.addEventListener("DOMContentLoaded", () => {
+  const gridContainer = document.getElementById("grid-container");
+  const resizeButton = document.getElementById("resize-button");
 
-console.log(getComputerChoice());
+  function createGrid(size) {
+    gridContainer.innerHTML = ""; // Clear any existing grid
+    const gridSize = size * size;
+    const squareSize = 960 / size; // Make the total grid size 960px by 960px
 
-function getHumanChoice() {
-    let choice = prompt("Choose rock, paper, or scissors:").toLowerCase();
-    while (!["rock", "paper", "scissors"].includes(choice)) {
-        choice = prompt("Invalid choice. Choose rock, paper, or scissors:").toLowerCase();
+    for (let i = 0; i < gridSize; i++) {
+      const square = document.createElement("div");
+      square.classList.add("grid-square");
+      square.style.width = `${squareSize}px`;
+      square.style.height = `${squareSize}px`;
+      square.addEventListener("mouseover", () => {
+        square.style.backgroundColor = getRandomColor(); // Change color on hover
+      });
+      gridContainer.appendChild(square);
     }
-    return choice;
-}
+  }
 
-console.log(getHumanChoice());
+  // Get random RGB color
+  function getRandomColor() {
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+    return `rgb(${r}, ${g}, ${b})`;
+  }
 
-let humanScore = 0;
-let computerScore = 0;
-
-function playRound(humanChoice, computerChoice) {
-    humanChoice = humanChoice.toLowerCase();
-    if (humanChoice === computerChoice) {
-        console.log("It's a tie!");
-    } else if (
-        (humanChoice === "rock" && computerChoice === "scissors") ||
-        (humanChoice === "paper" && computerChoice === "rock") ||
-        (humanChoice === "scissors" && computerChoice === "paper")
-    ) {
-        console.log(`You win! ${humanChoice} beats ${computerChoice}`);
-        humanScore++;
-    } else {
-        console.log(`You lose! ${computerChoice} beats ${humanChoice}`);
-        computerScore++;
+  // Button functionality
+  resizeButton.addEventListener("click", () => {
+    let size = prompt("Enter the number of squares per side (max 100):");
+    size = parseInt(size);
+    if (size > 100) {
+      size = 100;
     }
-}
+    createGrid(size);
+  });
 
-const humanSelection = getHumanChoice();
-const computerSelection = getComputerChoice();
-playRound(humanSelection, computerSelection);
-console.log(`Scores - You: ${humanScore}, Computer: ${computerScore}`);
-
-function playGame() {
-    for (let i = 0; i < 5; i++) {
-        const humanChoice = getHumanChoice();
-        const computerChoice = getComputerChoice();
-        playRound(humanChoice, computerChoice);
-        console.log(`Round ${i + 1}: You chose ${humanChoice}, Computer chose ${computerChoice}`);
-        console.log(`Scores - You: ${humanScore}, Computer: ${computerScore}`);
-    }
-
-    if (humanScore > computerScore) {
-        console.log("You win the game!");
-    } else if (computerScore > humanScore) {
-        console.log("Computer wins the game!");
-    } else {
-        console.log("It's a tie!");
-    }
-}
-
-// Start the game
-playGame();
+  // Initialize the grid with 16x16 squares
+  createGrid(16);
+});
